@@ -1,0 +1,18 @@
+-By using gobuster to find open directories in the server I have found that there is a login page at /admin, and other directories at /data, /plugins, /theme, and a robots.txt page
+-After digging around these directories I found a .users xml file that shares admin credentials
+- user: admin
+- pass: d033e22ae348aeb5660fc2140aec35850c4da997
+-/data has most of the juicy information including
+	-api key: 4f399dc72ff8e619e327800f851e9986
+	-something is an old version of 3.3.15 (metasploitable?)
+-That version of GetSimple is metasploitable through this exploit
+- multi/http/getsimplecms_unauth_code_exec
+-I was able to get a meterpreter session running and found user.txt
+-Meterpreter info
+	-uid: www-data
+	-sysinfo: OS          : Linux gettingstarted 5.4.0-65-generic #73-Ubuntu SMP Mon Jan 18 17:25:17 UTC 2021 x86_64
+	-shell: sudo -l (User www-data may run the following commands on gettingstarted:
+    (ALL : ALL) NOPASSWD: /usr/bin/php)
+-No suggestions when using post/multi/recon/local_exploit_suggester
+-I then used 'find / -perm -u=s -type f 2>/dev/null' to find SUID binaries and see if I could run a root shell but then I realized that I have sudo permissions over the php directory and so I went on GTFObins to find a shell that I can run through php and after upgrading my TTY I saw that I was the root user.
+-
